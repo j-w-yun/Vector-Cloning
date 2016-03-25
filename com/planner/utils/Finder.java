@@ -14,9 +14,6 @@ public final class Finder
 	
 	static
 	{
-		enzyme = new ArrayList<Integer>();
-		index = new ArrayList<Integer>();
-		
 		recognitionSequence = new String[Enzymes.DATA.length];
 		
 		for(int j = 0; j < Enzymes.DATA.length; j++)
@@ -25,53 +22,80 @@ public final class Finder
 		}
 	}
 	
+	private static synchronized String reverse(String text)
+	{
+		StringBuilder toReturn = new StringBuilder();
+		for(int j = 0 ; j < text.length(); j++)
+		{
+			if(text.charAt(j) == 'A')
+			{
+				toReturn.append("T");
+			}
+			else if(text.charAt(j) == 'T')
+			{
+				toReturn.append("A");
+			}
+			else if(text.charAt(j) == 'G')
+			{
+				toReturn.append("C");
+			}
+			else if(text.charAt(j) == 'C')
+			{
+				toReturn.append("G");
+			}
+			
+//			 TODO: 	B = C or G or T 
+//					D = A or G or T 
+//					H = A or C or T 
+//					K = G or T 
+//					M = A or C 
+//					N = A or C or G or T 
+//					R = A or G 
+//					S = C or G 
+//					V = A or C or G 
+//					W = A or T 
+//					Y = C or T
+			else if(text.charAt(j) == 'R')
+			{
+				toReturn.append("R");
+			}
+			else if(text.charAt(j) == 'Y')
+			{
+				toReturn.append("Y");
+			}
+			else if(text.charAt(j) == 'N')
+			{
+				toReturn.append("N");
+			}
+		}
+		
+		return toReturn.toString();
+	}
+	
+	// Scans all cutters
 	private static synchronized void scan(String text)
 	{
-		enzyme.clear();
-		index.clear();
+		enzyme = new ArrayList<Integer>();
+		index = new ArrayList<Integer>();
 		
 		// Iterate through all enzymes
 		for(int j = 0; j < recognitionSequence.length; j++)
 		{
-			int counter = text.indexOf(recognitionSequence[j]);
-			while(counter >= 0)
+			int counter1 = text.indexOf(recognitionSequence[j]);
+			while(counter1 >= 0)
 			{
 				enzyme.add(j);
-				index.add(counter);
-				counter = text.indexOf(recognitionSequence[j], counter + 1);
+				index.add(counter1);
+				counter1 = text.indexOf(recognitionSequence[j], counter1 + 1);
 			}
 			
-			
-//			// Soln #2
-//			if(text.contains(recognitionSequence[j]))
-//			{
-//				enzyme.add(j);
-//				index.add(text.indexOf(recognitionSequence[j]));
-//			}
-			
-//			// Iterate through all bases
-//			for(int k = 0; k < text.length(); k++)
-//			{
-//				if(text.charAt(k) == recognitionSequence[j].charAt(enzIndex))
-//				{
-//					enzIndex++;
-//					
-//					// Termination condition
-//					if(enzIndex == recognitionSequence[j].length())
-//					{
-//						enzyme.add(j);
-//						index.add(k - (enzIndex - 1));
-//						
-//						k -= (enzIndex - 1);
-//						enzIndex = 0;
-//					}
-//				}
-//				else
-//				{
-//					enzIndex = 0;
-//				}
-//			}
-//			enzIndex = 0;
+			int counter2 = text.indexOf(reverse(recognitionSequence[j]));
+			while(counter2 >= 0)
+			{
+				enzyme.add(j);
+				index.add(counter2);
+				counter2 = text.indexOf(reverse(recognitionSequence[j]), counter2 + 1);
+			}
 		}
 	}
 	
@@ -80,9 +104,64 @@ public final class Finder
 		return Enzymes.DATA[enzymeID][0];
 	}
 	
+	// Interleave the data?
+	public static ArrayList<Integer> getSingleEnzyme(String text)
+	{
+		scan(text);
+//		getEnzyme(text);
+//		getIndex(text);
+		
+		int enzymePos = 0;
+		boolean multipleHits = false;
+		
+		for(int j = 0; j < enzyme.size(); j++)
+		{
+			multipleHits = false;
+			enzymePos = enzyme.get(j);
+			
+			for(int k = j; k < enzyme.size(); k++)
+			{
+				if(enzyme.get(k) == enzymePos)
+				{
+					enzyme.remove(k);
+					multipleHits = true;
+					k--;
+				}
+			}
+			
+			if(multipleHits)
+			{
+				enzyme.remove(j);
+				j--;
+			}
+		}
+		
+		for(int j = 0; j < enzyme.size(); j++)
+		{
+			System.out.println(enzyme.get(j));
+		}
+		
+		return enzyme;
+	}
+	// Needs to be called right after calling getSingleEnzyme else risk receiving incorrect data
+	public static ArrayList<Integer> getSingleIndex(String text)
+	{
+		return index;
+	}
+	
+	public static ArrayList<Integer> getDoubleCutters(String text)
+	{
+		return null;
+	}
+	public static ArrayList<Integer> getTripleCutters(String text)
+	{
+		return null;
+	}
+	
 	public static ArrayList<Integer> getEnzyme(String text)
 	{
 		scan(text);
+		//getSingleEnzyme(text);
 		return enzyme;
 	}
 	

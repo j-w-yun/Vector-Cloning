@@ -113,12 +113,6 @@ public class ParameterPanel extends JPanel
 		add(drawingPanel, BorderLayout.CENTER);
 	}
 	
-//	private void makeSequencePanel()
-//	{
-//		sequencePanel = new SequencePanel();
-//		sequencePanel.setBorder(BorderFactory.createEtchedBorder());
-//	}
-	
 	private void makeDrawingPanel()
 	{
 		drawingPanel = new DrawingPanel();

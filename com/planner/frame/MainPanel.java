@@ -34,15 +34,15 @@ public final class MainPanel extends JPanel
 		JComponent panel1 = makeInputPanel();
 		tabbedPane.addTab("Input Sequence", null, panel1, "");
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
-
+		
 		// Panel #2
-		JComponent panel2 = makeParameterPanel();
-		tabbedPane.addTab("Parameters", null, panel2, "");
+		JComponent panel2 = makeSitePanel();
+		tabbedPane.addTab("Sites", null, panel2, "");
 		tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
 		// Panel #3
-		JComponent panel3 = makeSitePanel();
-		tabbedPane.addTab("Sites", null, panel3, "");
+		JComponent panel3 = makeParameterPanel();
+		tabbedPane.addTab("Parameters", null, panel3, "");
 		tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
 
 		// Panel #4

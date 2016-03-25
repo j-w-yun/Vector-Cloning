@@ -14,12 +14,12 @@ public class Updater2 extends Thread
 	{
 		sitePanel.update();
 		
-		try
-		{
-			Thread.sleep(1000);
-		}
-		catch(InterruptedException e)
-		{
-		}
+//		try
+//		{
+//			Thread.sleep(1000);
+//		}
+//		catch(InterruptedException e)
+//		{
+//		}
 	}
 }

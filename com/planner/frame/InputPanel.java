@@ -47,12 +47,12 @@ public class InputPanel extends JPanel
 		inputTextPanel.add(scroll_2);
 		
 		// Create options for vector
-		JRadioButton linearVector = new JRadioButton("Linear DNA");
-		linearVector.setSelected(true);
-		JRadioButton circularVector = new JRadioButton("Circular DNA");
-		ButtonGroup groupVector = new ButtonGroup();
-		groupVector.add(linearVector);
-		groupVector.add(circularVector);
+//		JRadioButton linearVector = new JRadioButton("Linear DNA");
+//		linearVector.setSelected(true);
+//		JRadioButton circularVector = new JRadioButton("Circular DNA");
+//		ButtonGroup groupVector = new ButtonGroup();
+//		groupVector.add(linearVector);
+//		groupVector.add(circularVector);
 		
 		// Initialize buttons
 		loadVector = new JButton("Load Vector");
@@ -63,8 +63,8 @@ public class InputPanel extends JPanel
 		saveVector.addActionListener(new ButtonListener());
 		
 		JPanel inputOptionPanel1 = new JPanel(new FlowLayout());
-		inputOptionPanel1.add(linearVector);
-		inputOptionPanel1.add(circularVector);
+//		inputOptionPanel1.add(linearVector);
+//		inputOptionPanel1.add(circularVector);
 		inputOptionPanel1.add(loadVector);
 		inputOptionPanel1.add(saveVector);
 		

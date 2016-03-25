@@ -28,8 +28,8 @@ public class SitePanel extends JTabbedPane
 	private JPanel insertPanel = null;
 	
 	// Text representation
-	private JTextArea vectorSequence;
-	private JTextArea insertSequence;
+	private JTextArea vectorSequence = null;
+	private JTextArea insertSequence = null;
 	
 	private JPanel vectorTextPanel = null;
 	private JPanel insertTextPanel = null;
@@ -43,7 +43,23 @@ public class SitePanel extends JTabbedPane
 	private ArrayList<Integer> iDisplayIndex = null;
 	private ArrayList<Integer> iEnzyme = null;
 	private ArrayList<Integer> iIndex = null;
+
+	private JRadioButton vOneCut = null;
+	private JRadioButton vTwoCut = null;
+	private JRadioButton vThreeCut = null;
+	private JRadioButton vAllCut = null;
+
+	private JRadioButton iOneCut = null;
+	private JRadioButton iTwoCut = null;
+	private JRadioButton iThreeCut = null;
+	private JRadioButton iAllCut = null;
+
+	private int vectorSize;
+	private int insertSize;
 	
+	private double vectorScale;
+	private double insertScale;
+
 	public SitePanel()
 	{
 		/*
@@ -55,11 +71,10 @@ public class SitePanel extends JTabbedPane
 		vectorPanel = new JPanel(new BorderLayout());
 		insertPanel = new JPanel(new BorderLayout());
 		
-		JRadioButton vOneCut = new JRadioButton("Single cutters");
-		vOneCut.setSelected(true);
-		JRadioButton vTwoCut = new JRadioButton("Double cutters");
-		JRadioButton vThreeCut = new JRadioButton("Triple cutters");
-		JRadioButton vAllCut = new JRadioButton("All cutters");
+		vOneCut = new JRadioButton("Single cutters"); vOneCut.setSelected(true);
+		vTwoCut = new JRadioButton("Double cutters");
+		vThreeCut = new JRadioButton("Triple cutters");
+		vAllCut = new JRadioButton("All cutters");
 		
 		ButtonGroup vGroupInsert = new ButtonGroup();
 		vGroupInsert.add(vOneCut);
@@ -67,11 +82,10 @@ public class SitePanel extends JTabbedPane
 		vGroupInsert.add(vThreeCut);
 		vGroupInsert.add(vAllCut);
 		
-		JRadioButton iOneCut = new JRadioButton("Single cutters");
-		iOneCut.setSelected(true);
-		JRadioButton iTwoCut = new JRadioButton("Double cutters");
-		JRadioButton iThreeCut = new JRadioButton("Triple cutters");
-		JRadioButton iAllCut = new JRadioButton("All cutters");
+		iOneCut = new JRadioButton("Single cutters"); iOneCut.setSelected(true);
+		iTwoCut = new JRadioButton("Double cutters");
+		iThreeCut = new JRadioButton("Triple cutters");
+		iAllCut = new JRadioButton("All cutters");
 		
 		ButtonGroup iGroupInsert = new ButtonGroup();
 		iGroupInsert.add(iOneCut);
@@ -113,13 +127,11 @@ public class SitePanel extends JTabbedPane
 		
 		vectorSequence = new JTextArea();
 		vectorSequence.setFont(new Font("LucidaTypewriterRegular", Font.BOLD, 10));
-//		vectorSequence.setLineWrap(true);
 		vectorSequence.setBorder(BorderFactory.createEtchedBorder());
 		vectorSequence.setEditable(false);
 		
 		insertSequence = new JTextArea();
 		insertSequence.setFont(new Font("LucidaTypewriterRegular", Font.BOLD, 10));
-//		insertSequence.setLineWrap(true);
 		insertSequence.setBorder(BorderFactory.createEtchedBorder());
 		insertSequence.setEditable(false);
 		
@@ -128,11 +140,11 @@ public class SitePanel extends JTabbedPane
 
 		vectorTextPanel.add(vectorLabel, BorderLayout.NORTH);
 		vectorTextPanel.add(scroll_1, BorderLayout.CENTER);
-		addTab("Vector Text", null, vectorTextPanel, "");
+		addTab("Vector Sequence", null, vectorTextPanel, "");
 		
 		insertTextPanel.add(insertLabel, BorderLayout.NORTH);
 		insertTextPanel.add(scroll_2, BorderLayout.CENTER);
-		addTab("Insert Text" , null, insertTextPanel, "");
+		addTab("Insert Sequence" , null, insertTextPanel, "");
 	}
 	
 	
@@ -150,6 +162,7 @@ public class SitePanel extends JTabbedPane
 		public void paintComponent(Graphics g)
 		{
 			super.paintComponent(g);
+			
 			g.setColor(Color.WHITE);
 			
 			g.drawLine(100, 300, 950, 300);
@@ -163,6 +176,36 @@ public class SitePanel extends JTabbedPane
 			{
 				g.drawString(String.valueOf(inputPanel.getInsert().getText().length()), 960, 300);		
 			}
+
+			// Mark for graphical update
+			vEnzyme = Finder.getEnzyme(inputPanel.getVector().getText());
+			vIndex = Finder.getIndex(inputPanel.getVector().getText());
+			iEnzyme = Finder.getEnzyme(inputPanel.getInsert().getText());
+			iIndex = Finder.getIndex(inputPanel.getInsert().getText());
+			
+			// Update graphics
+			vectorSize = inputPanel.getVector().getText().length();
+			insertSize = inputPanel.getInsert().getText().length();
+
+			vectorScale = (double) 850 / vectorSize;
+			insertScale = (double) 850 / insertSize;
+			
+			if(constant == VECTOR_SEQUENCE)
+			{
+				MainPanel.println(String.valueOf(vEnzyme.size()));
+				for(int j = 0; j < vEnzyme.size(); j++)
+				{
+					g.drawLine((int) (vIndex.get(j) * vectorScale) + 100, 290, (int) (vIndex.get(j) * vectorScale) + 100, 310);
+				}				
+			}
+			
+			else if(constant == INSERT_SEQUENCE)
+			{
+				for(int j = 0; j < iEnzyme.size(); j++)
+				{
+					g.drawLine((int) (iIndex.get(j) * insertScale) + 100, 290, (int) (iIndex.get(j) * insertScale) + 100, 310);
+				}
+			}
 		}
 	}
 	
@@ -173,9 +216,11 @@ public class SitePanel extends JTabbedPane
 	
 	public void update()
 	{
+		update(inputPanel.getVector().getText(), inputPanel.getInsert().getText());
+		
+		// Finalize
 		panel1.repaint();
 		panel2.repaint();
-		update(inputPanel.getVector().getText(), inputPanel.getInsert().getText());
 	}
 	
 	public void update(String vectorText, String insertText)
@@ -194,8 +239,7 @@ public class SitePanel extends JTabbedPane
 				
 			while(vIndex.contains(j))
 			{
-//				MainPanel.println(String.valueOf(vIndex.size()));
-				vBuilder.append("(" + vIndex.get(vIndex.indexOf(j)) + "/" + vEnzyme.get(vIndex.indexOf(j)) + ") ");
+				vBuilder.append("(" + vIndex.get(vIndex.indexOf(j)) + "/" + Enzymes.getName(vEnzyme.get(vIndex.indexOf(j))) + ") ");
 				
 				int temp = vIndex.indexOf(j);
 				
@@ -228,7 +272,6 @@ public class SitePanel extends JTabbedPane
 			
 			while(iIndex.contains(j))
 			{
-//				MainPanel.println(String.valueOf(vIndex.size()));
 				iBuilder.append("(" + iIndex.get(iIndex.indexOf(j)) + "/" + Enzymes.getName(iEnzyme.get(iIndex.indexOf(j))) + ") ");
 				
 				int temp = iIndex.indexOf(j);
